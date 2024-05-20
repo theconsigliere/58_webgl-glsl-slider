@@ -7,7 +7,9 @@ const NewShaderMaterial = shaderMaterial(
   {
     uResolution: new THREE.Vector2(),
     uPointer: new THREE.Vector2(),
-    uTexture: new THREE.Vector2(),
+    uTexture: null,
+    distanceFromCenter: 0,
+    transparent: true,
 
     // side: THREE.DoubleSide,
   },
@@ -26,6 +28,7 @@ const NewShaderMaterial = shaderMaterial(
       `,
   /*fragment*/ `
       uniform float uTime;
+      uniform float distanceFromCenter;
       uniform vec2 uResolution;
       uniform vec2 pointer;
       uniform sampler2D uTexture;
@@ -34,7 +37,12 @@ const NewShaderMaterial = shaderMaterial(
              
       void main()
       {
-        gl_FragColor = vec4(vUv, 0.0, 1.0);
+        vec4 photoTexture = texture2D(uTexture, vUv);
+
+        // Makes non selected images black & white
+        vec4 blackandWhite = vec4(photoTexture.r, photoTexture.r, photoTexture.r, .25);
+
+        gl_FragColor = mix(blackandWhite, photoTexture, distanceFromCenter);
       }`
 )
 

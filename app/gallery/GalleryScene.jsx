@@ -30,8 +30,6 @@ export default function GalleryScene({ children, ...props }) {
     imagesRef.current.forEach((image, index) => {
       initialImagePositions[index] = index * (sliderWidth + sliderMargin)
     })
-
-    console.log("imagesRef", imagesRef)
   })
 
   console.log("re-rendered")
@@ -56,12 +54,29 @@ export default function GalleryScene({ children, ...props }) {
       // if image position is 1 or less or -1 or more than update greyscale value to 1
       if (Math.abs(image.position.x) > 1.5) {
         //   image.material.color.set("grey")
-        damp(image.material, "grayscale", 1, 0.45, delta)
-        damp(image.material, "opacity", 0.15, 0.45, delta)
+        // damp(image.material, "grayscale", 1, 0.45, delta)
+        // damp(image.material, "opacity", 0.15, 0.45, delta)
+
+        // lerp uniform to 0 to make it black and white
+        damp(
+          image.material.uniforms.distanceFromCenter,
+          "value",
+          0,
+          0.45,
+          delta
+        )
       } else {
         // this is active!
-        damp(image.material, "grayscale", 0, 0.45, delta)
-        damp(image.material, "opacity", 1, 0.45, delta)
+        // damp(image.material, "grayscale", 0, 0.45, delta)
+        // damp(image.material, "opacity", 1, 0.45, delta)
+
+        damp(
+          image.material.uniforms.distanceFromCenter,
+          "value",
+          1,
+          0.45,
+          delta
+        )
 
         activeIndex = index
       }
