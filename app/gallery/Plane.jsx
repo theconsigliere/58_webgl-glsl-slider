@@ -6,8 +6,6 @@ import { NewShaderMaterial } from "./Shader"
 function Plane({ texture, ...props }, ref) {
   const { viewport, size } = useThree()
 
-  console.log("Plane", texture)
-
   return (
     <mesh {...props} ref={ref}>
       <planeGeometry />

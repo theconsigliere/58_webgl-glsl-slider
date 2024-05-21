@@ -8,22 +8,40 @@ const NewShaderMaterial = shaderMaterial(
     uResolution: new THREE.Vector2(),
     uPointer: new THREE.Vector2(),
     uTexture: null,
+    uTime: 0,
     distanceFromCenter: 0,
     transparent: true,
-
     // side: THREE.DoubleSide,
   },
   // THREE.doubleSide renders both sides of the plane
 
-  /*vertex*/ `      
+  /*vertex*/ `    
+      uniform float uTime;  
+      uniform float distanceFromCenter;
       varying vec2 vUv;
       void main()
       {
+
         //Position
-        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+        vec3 pos = position;
+
+        // scale the plane when distanceFromCenter is 1
+        pos.xy *= 1.+ (distanceFromCenter * 0.125);
+        
+
+
+        vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
         // Final position
         gl_Position = projectionMatrix * viewMatrix * modelPosition;
-        vUv = uv;
+
+
+        // varying
+        // zoom in effect when images is selected
+        // -----------------------------
+        vUv = (uv - vec2(0.5)) / (1.25 - (0.1 * distanceFromCenter)*(2. - distanceFromCenter)) + vec2(0.5);
+
+
+
       }
       `,
   /*fragment*/ `
@@ -40,10 +58,14 @@ const NewShaderMaterial = shaderMaterial(
         vec4 photoTexture = texture2D(uTexture, vUv);
 
         // Makes non selected images black & white
-        vec4 blackandWhite = vec4(photoTexture.r, photoTexture.r, photoTexture.r, .25);
+        //  vec4 blackandWhite = vec4(photoTexture.r, photoTexture.r, photoTexture.r, .05);
+        vec4 blackandWhite = vec4(photoTexture.r, photoTexture.g, photoTexture.b, .05);
 
         gl_FragColor = mix(blackandWhite, photoTexture, distanceFromCenter);
-      }`
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }
+      `
 )
 
 extend({ NewShaderMaterial })

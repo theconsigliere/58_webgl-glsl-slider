@@ -1,9 +1,9 @@
 import dynamic from "next/dynamic"
 import styles from "./page.module.css"
-import Branding from "./components/Branding"
-import Loading from "./components/Loading"
+import Branding from "./Components/Branding"
+import Loading from "./Components/Loading"
 
-const Scene = dynamic(() => import("./components/Scene"), {
+const Scene = dynamic(() => import("./Components/Scene"), {
   ssr: false,
   loading: () => <Loading />,
 })

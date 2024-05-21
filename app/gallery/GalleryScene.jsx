@@ -35,6 +35,10 @@ export default function GalleryScene({ children, ...props }) {
   console.log("re-rendered")
 
   useFrame((state, delta) => {
+    // update uTime uniform
+    imagesRef.current.forEach((image) => {
+      image.material.uniforms.uTime.value = state.clock.elapsedTime
+    })
     // move plane according to camera scroll
 
     // loop through images and update their position

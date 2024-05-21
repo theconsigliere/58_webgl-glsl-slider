@@ -5,7 +5,7 @@ import { Perf } from "r3f-perf"
 import { ScrollControls, Scroll } from "@react-three/drei"
 import { useControls } from "leva"
 
-import GalleryScene from "../gallery/GalleryScene"
+import GalleryScene from "../Gallery/GalleryScene"
 
 export default function Scene() {
   const galleryProps = useControls("Gallery Props", {
