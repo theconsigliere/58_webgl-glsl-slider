@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Globe from "./Globe"
-import { biggerFont } from "../layout"
 import styles from "../styles/branding.module.css"
 
 export default function Branding({ number }) {
@@ -39,9 +38,7 @@ export default function Branding({ number }) {
           <p className={styles.subtitleExperiment}>
             Design + Dev #<span>{number}</span>
           </p>
-          <h3 className={`${biggerFont.className} ${styles.condensedFont}`}>
-            Experiment
-          </h3>
+          <h3 className={styles.condensedFont}>Experiment</h3>
         </div>
       </div>
     </div>

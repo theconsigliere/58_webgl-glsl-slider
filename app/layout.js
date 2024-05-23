@@ -2,13 +2,17 @@ import { Manrope } from "next/font/google"
 import localFont from "next/font/local"
 import "./globals.css"
 
-export const biggerFont = localFont({
+const bigger = localFont({
   src: "../public/fonts/BiggerDisplay.woff",
   display: "swap",
+  variable: "--font-bigger",
   family: "Bigger Display, sans-serif",
 })
 
-const manrope = Manrope({ subsets: ["latin"] })
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+})
 
 export const metadata = {
   title: "Create Next App",
@@ -17,7 +21,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${bigger.variable} ${manrope.variable}`}>
       <body className={manrope.className}>{children}</body>
     </html>
   )

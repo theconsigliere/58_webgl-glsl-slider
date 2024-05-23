@@ -1,6 +1,5 @@
 import Image from "next/image"
 import styles from "../styles/loading.module.css"
-import { biggerFont } from "../layout"
 
 export default function Loading() {
   return (
@@ -14,9 +13,7 @@ export default function Loading() {
           height={24}
           priority
         />
-        <h3 className={` ${biggerFont.className} ${styles.text}`}>
-          Loading ...
-        </h3>
+        <h3 className={styles.text}>Loading ...</h3>
       </div>
     </div>
   )

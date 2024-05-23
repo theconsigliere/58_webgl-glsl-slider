@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { act, useEffect, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll, Image, useTexture } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
@@ -17,7 +17,7 @@ export default function GalleryScene({
   const { viewport } = useThree()
 
   const sliderMargin = galleryProps.margin
-  let sliderWidth = viewport.width / 5
+  let sliderWidth = viewport.width / 4
 
   // set initial gallery positions
   images.map((image, index) => {
@@ -53,7 +53,7 @@ export default function GalleryScene({
         delta
       )
       // if image position is 1 or less or -1 or more than update greyscale value to 1
-      if (Math.abs(image.position.x) > 1.5) {
+      if (Math.abs(image.position.x) > 1) {
         // lerp uniform to 0 to make it black and white
         damp(
           image.material.uniforms.distanceFromCenter,
@@ -62,8 +62,10 @@ export default function GalleryScene({
           0.45,
           delta
         )
+
+        // lerp --data-opacity to 0 to make it invisible
       } else {
-        // this is active!
+        //* ACTIVE IMAGE
 
         damp(
           image.material.uniforms.distanceFromCenter,
@@ -86,9 +88,9 @@ export default function GalleryScene({
           (sliderMargin + sliderWidth) * (index - activeIndex),
           0.25,
           delta,
-          0.5,
-          expo.inOut,
-          0.1
+          1,
+          expo.out,
+          0.01
         )
       }
     })

@@ -22,7 +22,7 @@ export default function Scene() {
 
   return (
     <>
-      <GalleryDOM activeIndex={activeIndex} />
+      <GalleryDOM activeIndex={activeIndex} images={images} />
       <Canvas dpr={[1, 2]} style={{ backgroundColor: "#141414" }}>
         <Perf position={"bottom-left"} />
         <ScrollControls distance={9}>
