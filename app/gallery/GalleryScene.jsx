@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll, Image, useTexture } from "@react-three/drei"
-import { damp, expo } from "maath/easing"
+import { damp, damp3, expo } from "maath/easing"
 import Plane from "./Plane"
 
 export default function GalleryScene({ children, ...props }) {
@@ -15,31 +15,32 @@ export default function GalleryScene({ children, ...props }) {
   const { galleryProps } = props
   let activeIndex = null
   const sliderMargin = galleryProps.margin
-  let sliderWidth = viewport.width / 3
+
+  let sliderWidth = viewport.width / 4
 
   // 8 images
   const images = [1, 2, 3, 4, 5, 1, 2, 3]
-  const sliderLength = images.length
   const initialImagePositions = []
+
+  // set initial gallery positions
+  images.map((image, index) => {
+    initialImagePositions[index] = index * (sliderWidth + sliderMargin)
+  })
 
   // make sure we have the smae amount of imageRefs as images
   useEffect(() => {
     imagesRef.current = imagesRef.current.slice(0, images.length)
-
-    // set initial position
-    imagesRef.current.forEach((image, index) => {
-      initialImagePositions[index] = index * (sliderWidth + sliderMargin)
-    })
   })
 
-  console.log("re-rendered")
-
   useFrame((state, delta) => {
-    // update uTime uniform
-    imagesRef.current.forEach((image) => {
-      image.material.uniforms.uTime.value = state.clock.elapsedTime
-    })
-    // move plane according to camera scroll
+    //* PARALLAX CAMERA
+    damp3(
+      state.camera.position,
+      [-state.pointer.x / 2, state.pointer.y / 2, 4],
+      0.3,
+      delta
+    )
+    state.camera.lookAt(0, 0, 0)
 
     // loop through images and update their position
     imagesRef.current.forEach((image, index) => {
@@ -49,7 +50,7 @@ export default function GalleryScene({ children, ...props }) {
         initialImagePositions[index] -
           // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
           scroll.offset *
-            (sliderLength - 1) * // when offset is in middle * (sliderLength - 1)
+            (images.length - 1) * // when offset is in middle * (images.length - 1)
             (sliderWidth + sliderMargin),
         0.1,
         delta
@@ -87,6 +88,8 @@ export default function GalleryScene({ children, ...props }) {
 
       // // snap scroll on scroll
 
+      // SNAP SCROLL
+
       // we have begun scrolling
       if (scroll.delta === 0 && scroll.offset > 0) {
         // snap to on scroll
@@ -108,10 +111,13 @@ export default function GalleryScene({ children, ...props }) {
           (sliderMargin + sliderWidth) * (index - activeIndex),
           0.25,
           delta,
-          1,
+          0.3,
           expo.inOut,
           0.1
         )
+
+        // sanp camera too
+        damp3(state.camera.position, [0, 0, 4], 0.3, delta)
       }
     })
   })
@@ -133,6 +139,7 @@ export default function GalleryScene({ children, ...props }) {
           ref={(el) => (imagesRef.current[index] = el)}
           texture={useTexture(`/images/${image}.jpg`)}
           scale={sliderWidth}
+          position={[initialImagePositions[index], 0, 0]}
         />
       ))}
 

@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { extend } from "@react-three/fiber"
-import { shaderMaterial } from "@react-three/drei"
+import { Wireframe, shaderMaterial } from "@react-three/drei"
 
 // Tutorial: https://www.youtube.com/watch?v=f4s1h2YETNY
 const NewShaderMaterial = shaderMaterial(
@@ -11,6 +11,7 @@ const NewShaderMaterial = shaderMaterial(
     uTime: 0,
     distanceFromCenter: 0,
     transparent: true,
+    // wireframe: true,
     // side: THREE.DoubleSide,
   },
   // THREE.doubleSide renders both sides of the plane
@@ -19,6 +20,8 @@ const NewShaderMaterial = shaderMaterial(
       uniform float uTime;  
       uniform float distanceFromCenter;
       varying vec2 vUv;
+
+
       void main()
       {
 
@@ -52,6 +55,7 @@ const NewShaderMaterial = shaderMaterial(
       uniform sampler2D uTexture;
 
       varying vec2 vUv;  
+
              
       void main()
       {
