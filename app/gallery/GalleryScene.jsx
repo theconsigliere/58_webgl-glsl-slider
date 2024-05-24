@@ -29,7 +29,7 @@ export default function GalleryScene({
     damp3(
       state.camera.position,
       [-state.pointer.x / 2, state.pointer.y / 2, 4],
-      0.3,
+      0.25,
       delta
     )
     state.camera.lookAt(0, 0, 0)
@@ -86,7 +86,7 @@ export default function GalleryScene({
           image.position,
           "x",
           (sliderMargin + sliderWidth) * (index - activeIndex),
-          0.25,
+          0.35,
           delta,
           1,
           expo.out,
