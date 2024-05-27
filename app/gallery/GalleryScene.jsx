@@ -33,12 +33,6 @@ export default function GalleryScene() {
     )
     state.camera.lookAt(0, 0, 0)
 
-    // snap camera on idle
-    // if (scroll.delta === 0) {
-    //  // console.log("snap")
-    //   damp3(state.camera.position, [0, 0, 4], 0.3, delta)
-    // }
-
     // loop through images and update their position
     imagesRef.current.forEach((image, index) => {
       damp(

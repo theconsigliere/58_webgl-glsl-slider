@@ -12,7 +12,7 @@ const NewShaderMaterial = shaderMaterial(
     distanceFromCenter: 0,
     transparent: true,
     // wireframe: true,
-    // side: THREE.DoubleSide,
+    side: THREE.DoubleSide,
   },
   // THREE.doubleSide renders both sides of the plane
 
@@ -42,8 +42,6 @@ const NewShaderMaterial = shaderMaterial(
         // zoom in effect when images is selected
         // -----------------------------
         vUv = (uv - vec2(0.5)) / (1.25 - (0.1 * distanceFromCenter)*(2. - distanceFromCenter)) + vec2(0.5);
-
-
 
       }
       `,

@@ -6,7 +6,9 @@ import useStore from "../Stores/useStore"
 export default function GalleryDOM() {
   const titles = useRef([])
   const titlesList = useRef()
-  const { activeIndex, images } = useStore((state) => state)
+  const { activeIndex, images, setGrid, setGallery, phase } = useStore(
+    (state) => state
+  )
 
   useEffect(() => {
     gsap.to(titlesList.current, {
@@ -15,6 +17,10 @@ export default function GalleryDOM() {
       yPercent: -activeIndex * (100 / images.length),
     })
   }, [activeIndex])
+
+  useEffect(() => {
+    console.log(phase)
+  }, [phase])
 
   return (
     <>
@@ -34,6 +40,11 @@ export default function GalleryDOM() {
             })}
           </div>
         </div>
+      </div>
+
+      <div className={styles.selectorButtons}>
+        <button className={styles.galleryButton} onClick={setGallery}></button>
+        <button className={styles.gridButton} onClick={setGrid}></button>
       </div>
     </>
   )

@@ -112,6 +112,22 @@ export default create(
           return state.gridPositions
         })
       },
+
+      //Selector
+      phase: "gallery",
+      setGrid: () => {
+        set((state) => {
+          if (state.phase === "gallery") return { phase: "grid" }
+
+          return {}
+        })
+      },
+      setGallery: () => {
+        set((state) => {
+          if (state.phase === "grid") return { phase: "gallery" }
+          return {}
+        })
+      },
     }
   })
 )
