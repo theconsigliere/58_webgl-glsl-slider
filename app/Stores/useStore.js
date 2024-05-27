@@ -89,6 +89,7 @@ export default create(
       gridPositions: new Array(images.length).fill([0, 0, 0]),
       setGridPositions: () => {
         set((state) => {
+          console.log(state)
           const columns = state.gridColumns
           const rows = Math.ceil(state.images.length / columns)
 
@@ -108,6 +109,8 @@ export default create(
               }
             }
           }
+
+          console.log(state.gridPositions)
 
           return state.gridPositions
         })

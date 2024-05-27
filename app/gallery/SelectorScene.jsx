@@ -14,6 +14,9 @@ export default function SelectorScene() {
   const levaProps = useControls("Gallery Props", {
     galleryMargin: { value: 1.5, min: 0.0, max: 10 },
     galleryWidth: { value: 4, min: 1.5, max: 10 },
+    gridMargin: { value: 5, min: 0.0, max: 10 },
+    gridWidth: { value: 4, min: 1.5, max: 10 },
+    gridColumns: { value: 3, min: 2, max: 5 },
   })
 
   //deffer value
@@ -22,15 +25,32 @@ export default function SelectorScene() {
     imagesLength,
     setGallerySlideWidth,
     setGallerySlideMargin,
-    gallerySlideMargin,
     setGalleryPositions,
+    setGridSlideWidth,
+    setGridSlideMargin,
+    setGridPositions,
+    gridPositions,
+    phase,
   } = useStore((state) => state)
 
   // Gallery
   useEffect(() => {
-    setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
-    setGallerySlideMargin(levaProps.galleryMargin)
-    setGalleryPositions()
+    if (phase === "gallery") {
+      setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
+      setGallerySlideMargin(levaProps.galleryMargin)
+      setGalleryPositions()
+    }
+  }, [viewport.width, levaProps])
+
+  //grid
+  useEffect(() => {
+    if (phase === "grid") {
+      setGridSlideMargin(levaProps.gridMargin)
+      setGridColumns(levaProps.gridColumns)
+      setGridPositions()
+
+      console.log(setGridPositions)
+    }
   }, [viewport.width, levaProps])
 
   return (

@@ -18,10 +18,6 @@ export default function GalleryDOM() {
     })
   }, [activeIndex])
 
-  useEffect(() => {
-    console.log(phase)
-  }, [phase])
-
   return (
     <>
       <div className={styles.titleSection}>
@@ -43,8 +39,18 @@ export default function GalleryDOM() {
       </div>
 
       <div className={styles.selectorButtons}>
-        <button className={styles.galleryButton} onClick={setGallery}></button>
-        <button className={styles.gridButton} onClick={setGrid}></button>
+        <button
+          className={`${styles.galleryButton} ${styles.selectButton}`}
+          onClick={setGallery}
+        >
+          Gallery
+        </button>
+        <button
+          className={`${styles.gridButton} ${styles.selectButton}`}
+          onClick={setGrid}
+        >
+          Grid
+        </button>
       </div>
     </>
   )

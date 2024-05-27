@@ -52,3 +52,31 @@
     text-align: left;
   } */
 }
+
+/* Selector buttons */
+
+.selectorButtons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 5;
+  padding: 0.5rem;
+}
+
+.selectButton {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--color-white);
+  color: var(--color-white);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
