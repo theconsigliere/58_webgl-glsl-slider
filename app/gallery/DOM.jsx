@@ -3,11 +3,10 @@ import { useRef, useEffect } from "react"
 import styles from "../styles/gallery-dom.module.css"
 import useStore from "../Stores/useStore"
 
-export default function GalleryDOM({ images }) {
+export default function GalleryDOM() {
   const titles = useRef([])
   const titlesList = useRef()
-
-  const { activeIndex } = useStore((state) => state)
+  const { activeIndex, images } = useStore((state) => state)
 
   useEffect(() => {
     gsap.to(titlesList.current, {

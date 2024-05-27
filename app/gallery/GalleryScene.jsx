@@ -1,45 +1,27 @@
-import { useMemo, useEffect, useRef, useState } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
+import { useRef } from "react"
+import { useFrame } from "@react-three/fiber"
 import { useScroll, useTexture } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
 import Plane from "./Plane"
 
 import useStore from "../Stores/useStore"
 
-export default function GalleryScene({ children, galleryProps, images }) {
+export default function GalleryScene() {
   const scroll = useScroll()
   const objectRef = useRef()
   const imagesRef = useRef([])
-  const { viewport } = useThree()
 
-  const activeIndexStore = useStore((state) => state.activeIndex)
-  const setActiveIndexStore = useStore((state) => state.setActiveIndex)
+  const {
+    activeIndex,
+    setActiveIndex,
+    images,
+    imagesLength,
+    gallerySlideWidth,
+    gallerySlideMargin,
+    galleryPositions,
+  } = useStore((state) => state)
 
-  const sliderMargin = galleryProps.margin
-  let sliderWidth = viewport.width / 4
-
-  // set initial gallery positions
-  images.map((image, index) => {
-    image.galleryPosition = [index * (sliderWidth + sliderMargin), 0, 0]
-  })
-
-  // set initial grid positions
-  const columns = 3
-  const rows = 3
-
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      const index = i * columns + j
-
-      if (images[index]) {
-        images[index].gridPosition = [
-          j * (sliderWidth + sliderMargin),
-          -i * (sliderWidth + sliderMargin),
-          0,
-        ]
-      }
-    }
-  }
+  // re-render if galleryPositions change
 
   useFrame((state, delta) => {
     //* PARALLAX CAMERA
@@ -52,23 +34,25 @@ export default function GalleryScene({ children, galleryProps, images }) {
     state.camera.lookAt(0, 0, 0)
 
     // snap camera on idle
-    if (scroll.delta === 0) {
-      damp3(state.camera.position, [0, 0, 4], 0.3, delta)
-    }
+    // if (scroll.delta === 0) {
+    //  // console.log("snap")
+    //   damp3(state.camera.position, [0, 0, 4], 0.3, delta)
+    // }
 
     // loop through images and update their position
     imagesRef.current.forEach((image, index) => {
       damp(
         image.position,
         "x",
-        images[index].galleryPosition[0] -
+        galleryPositions[index][0] -
           // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
           scroll.offset *
-            (images.length - 1) * // when offset is in middle * (images.length - 1)
-            (sliderWidth + sliderMargin),
+            (imagesLength - 1) * // when offset is in middle * (images.length - 1)
+            (gallerySlideWidth + gallerySlideMargin),
         0.1,
         delta
       )
+
       // if image position is 1 or less or -1 or more than update greyscale value to 1
       if (Math.abs(image.position.x) > 1) {
         // lerp uniform to 0 to make it black and white
@@ -93,7 +77,7 @@ export default function GalleryScene({ children, galleryProps, images }) {
         )
 
         // set active index
-        setActiveIndexStore(index)
+        setActiveIndex(index)
       }
 
       // SNAP SCROLL
@@ -102,7 +86,7 @@ export default function GalleryScene({ children, galleryProps, images }) {
         damp(
           image.position,
           "x",
-          (sliderMargin + sliderWidth) * (index - activeIndexStore),
+          (gallerySlideMargin + gallerySlideWidth) * (index - activeIndex),
           0.35,
           delta,
           1,
@@ -120,8 +104,7 @@ export default function GalleryScene({ children, galleryProps, images }) {
           key={index}
           ref={(el) => (imagesRef.current[index] = el)}
           texture={useTexture(image.src)}
-          scale={sliderWidth}
-          position={image.galleryPosition}
+          position={galleryPositions[index]}
         />
       ))}
 

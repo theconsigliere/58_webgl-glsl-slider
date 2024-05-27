@@ -6,7 +6,7 @@ export default create(
     const images = [
       {
         src: "/images/1.jpg",
-        title: "Dirty Martini",
+        title: "Dirty Martiniz",
       },
       {
         src: "/images/2.jpg",
@@ -55,9 +55,9 @@ export default create(
       setGallerySlideWidth: (number) => {
         set((state) => ({ gallerySlideWidth: number }))
       },
-      galleryMargin: 0.65,
-      setGalleryMargin: (number) => {
-        set((state) => ({ galleryMargin: number }))
+      gallerySlideMargin: 1.5,
+      setGallerySlideMargin: (number) => {
+        set((state) => ({ gallerySlideMargin: number }))
       },
       galleryPositions: new Array(images.length).fill([0, 0, 0]),
 
@@ -65,7 +65,7 @@ export default create(
         set((state) => {
           images.map((image, index) => {
             state.galleryPositions[index] = [
-              index * (state.gallerySlideWidth + state.galleryMargin),
+              index * (state.gallerySlideWidth + state.gallerySlideMargin),
               0,
               0,
             ]

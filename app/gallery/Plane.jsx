@@ -1,10 +1,12 @@
 import { useRef, forwardRef } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 
+import useStore from "../Stores/useStore"
 import { NewShaderMaterial } from "./Shader"
 
 function Plane({ texture, ...props }, ref) {
   const { viewport, size } = useThree()
+  const gallerySlideWidth = useStore((state) => state.gallerySlideWidth)
 
   useFrame((state) => {
     if (ref.current) {
@@ -13,7 +15,7 @@ function Plane({ texture, ...props }, ref) {
   })
 
   return (
-    <mesh {...props} ref={ref}>
+    <mesh {...props} scale={gallerySlideWidth} ref={ref}>
       <planeGeometry args={[1, 1, 24, 24]} />
       <newShaderMaterial
         key={NewShaderMaterial.key}
