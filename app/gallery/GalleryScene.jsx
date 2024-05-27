@@ -1,20 +1,19 @@
-import { act, useEffect, useRef, useState } from "react"
+import { useMemo, useEffect, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
-import { useScroll, Image, useTexture } from "@react-three/drei"
+import { useScroll, useTexture } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
 import Plane from "./Plane"
 
-export default function GalleryScene({
-  children,
-  galleryProps,
-  activeIndex,
-  setActiveIndex,
-  images,
-}) {
+import useStore from "../Stores/useStore"
+
+export default function GalleryScene({ children, galleryProps, images }) {
   const scroll = useScroll()
   const objectRef = useRef()
   const imagesRef = useRef([])
   const { viewport } = useThree()
+
+  const activeIndexStore = useStore((state) => state.activeIndex)
+  const setActiveIndexStore = useStore((state) => state.setActiveIndex)
 
   const sliderMargin = galleryProps.margin
   let sliderWidth = viewport.width / 4
@@ -23,6 +22,24 @@ export default function GalleryScene({
   images.map((image, index) => {
     image.galleryPosition = [index * (sliderWidth + sliderMargin), 0, 0]
   })
+
+  // set initial grid positions
+  const columns = 3
+  const rows = 3
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      const index = i * columns + j
+
+      if (images[index]) {
+        images[index].gridPosition = [
+          j * (sliderWidth + sliderMargin),
+          -i * (sliderWidth + sliderMargin),
+          0,
+        ]
+      }
+    }
+  }
 
   useFrame((state, delta) => {
     //* PARALLAX CAMERA
@@ -75,8 +92,8 @@ export default function GalleryScene({
           delta
         )
 
-        setActiveIndex(index)
-        //setActiveIndex(index)
+        // set active index
+        setActiveIndexStore(index)
       }
 
       // SNAP SCROLL
@@ -85,7 +102,7 @@ export default function GalleryScene({
         damp(
           image.position,
           "x",
-          (sliderMargin + sliderWidth) * (index - activeIndex),
+          (sliderMargin + sliderWidth) * (index - activeIndexStore),
           0.35,
           delta,
           1,

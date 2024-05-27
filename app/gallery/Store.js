@@ -24,10 +24,30 @@ export default function Store() {
       galleryPosition: [0, 0, 0],
       gridPosition: [0, 0, 0],
     },
-    { src: "/images/5.jpg", title: "Pina Colada", galleryPosition: [0, 0, 0] },
-    { src: "/images/1.jpg", title: "Whiskey Sour", galleryPosition: [0, 0, 0] },
-    { src: "/images/2.jpg", title: "Negroni", galleryPosition: [0, 0, 0] },
-    { src: "/images/3.jpg", title: "Mai Tai", galleryPosition: [0, 0, 0] },
+    {
+      src: "/images/5.jpg",
+      title: "Pina Colada",
+      galleryPosition: [0, 0, 0],
+      gridPosition: [0, 0, 0],
+    },
+    {
+      src: "/images/1.jpg",
+      title: "Whiskey Sour",
+      galleryPosition: [0, 0, 0],
+      gridPosition: [0, 0, 0],
+    },
+    {
+      src: "/images/2.jpg",
+      title: "Negroni",
+      galleryPosition: [0, 0, 0],
+      gridPosition: [0, 0, 0],
+    },
+    {
+      src: "/images/3.jpg",
+      title: "Mai Tai",
+      galleryPosition: [0, 0, 0],
+      gridPosition: [0, 0, 0],
+    },
   ]
 
   return images
