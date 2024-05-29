@@ -35,6 +35,9 @@ export default function GalleryScene() {
         damp3(image.position, gridPositions[index], 0.05, 1)
         // re-scale
         damp3(image.scale, gridSlideWidth, 0.25, 1)
+        // set opacity to 0.85
+
+        damp(image.material.uniforms.distanceFromCenter, "value", 0.9, 0.45, 1)
       })
     }
 
@@ -111,12 +114,18 @@ export default function GalleryScene() {
       })
     }
     //* PARALLAX CAMERA
-    damp3(
-      state.camera.position,
-      [-state.pointer.x / 2, state.pointer.y / 2, 4],
-      0.25,
-      delta
-    )
+
+    if (phase === "gallery") {
+      damp3(
+        state.camera.position,
+        [-state.pointer.x / 2, state.pointer.y / 2, 4],
+        0.25,
+        delta
+      )
+      state.camera.lookAt(0, 0, 0)
+    } else {
+      damp3(state.camera.position, [0, 0, 4], 0.25, delta)
+    }
     state.camera.lookAt(0, 0, 0)
   })
 

@@ -49,12 +49,10 @@ export default function SelectorScene() {
       viewport.height /
         (levaProps.gridColumns + levaProps.gridMargin + levaProps.gridMargin)
     )
-    console.log(gridSlideWidth)
+
     setGridSlideMargin(levaProps.gridMargin)
     setGridColumns(levaProps.gridColumns)
     setGridPositions()
-
-    console.log(gridPositions)
   }, [phase, levaProps])
   //}, [viewport.width, levaProps, phase])
 
