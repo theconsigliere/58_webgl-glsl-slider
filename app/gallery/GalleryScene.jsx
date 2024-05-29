@@ -31,7 +31,20 @@ export default function GalleryScene() {
     if (phase === "grid") {
       //map through imagesRef
       imagesRef.current.forEach((image, index) => {
-        damp3(image.position, gridPositions[index], 0.25, 1)
+        // reposition
+        damp3(image.position, gridPositions[index], 0.05, 1)
+        // re-scale
+        damp3(image.scale, gridSlideWidth, 0.25, 1)
+      })
+    }
+
+    // animate to gallery view
+    if (phase === "gallery") {
+      imagesRef.current.forEach((image, index) => {
+        // from grid so that y is 0
+        damp(image.position, "y", 0, 0.1, 1)
+        // re-scale
+        damp3(image.scale, gallerySlideWidth, 0.25, 1)
       })
     }
   }, [phase])

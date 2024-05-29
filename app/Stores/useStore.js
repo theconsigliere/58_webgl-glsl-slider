@@ -76,8 +76,8 @@ export default create(
       },
 
       //GRID
-      gridMargin: 0.45,
-      setGridMargin: (number) => set((state) => ({ gridMargin: number })),
+      gridSlideMargin: 0.45,
+      setGridSlideMargin: (number) => set((state) => ({ gridMargin: number })),
       gridSlideWidth: 1,
       setGridSlideWidth: (number) => {
         set((state) => ({ gridSlideWidth: number }))
@@ -89,7 +89,6 @@ export default create(
       gridPositions: new Array(images.length).fill([0, 0, 0]),
       setGridPositions: () => {
         set((state) => {
-          console.log(state)
           const columns = state.gridColumns
           const rows = Math.ceil(state.images.length / columns)
 
@@ -97,20 +96,18 @@ export default create(
             for (let j = 0; j < columns; j++) {
               const index = i * columns + j
 
-              if (state.images[index]) {
-                //  minus the width of the slide and margin so it starts at top left not in center
-                state.gridPositions[index] = [
-                  j * (state.gridSlideWidth + state.gridMargin) -
-                    (state.gridSlideWidth + state.gridMargin), // x
-                  -i * (state.gridSlideWidth + state.gridMargin) -
-                    (state.gridSlideWidth + state.gridMargin), // y
-                  0,
-                ]
-              }
+              //  minus the width of the slide and margin so it starts at top left not in center
+              state.gridPositions[index] = [
+                j * (state.gridSlideWidth + state.gridSlideMargin) -
+                  (state.gridSlideWidth + state.gridSlideMargin), // x
+
+                state.gridSlideWidth +
+                  state.gridSlideMargin -
+                  (state.gridSlideWidth + state.gridSlideMargin) * i, // y
+                0,
+              ]
             }
           }
-
-          console.log(state.gridPositions)
 
           return state.gridPositions
         })
