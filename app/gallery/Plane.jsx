@@ -1,11 +1,14 @@
 import { useRef, forwardRef, useEffect } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { damp } from "maath/easing"
+import { useScroll } from "@react-three/drei"
+
 import useStore from "../Stores/useStore"
 import { NewShaderMaterial } from "./Shader"
 
 function Plane({ texture, itemKey, ...props }, ref) {
   const { viewport, size } = useThree()
+  const scroll = useScroll()
   const shaderRef = useRef()
 
   const { gallerySlideWidth, setActiveIndex, activeIndex, phase } = useStore(
@@ -15,6 +18,7 @@ function Plane({ texture, itemKey, ...props }, ref) {
   useFrame((state, delta) => {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uTime.value = state.clock.elapsedTime
+      shaderRef.current.uniforms.uVelocity.value = scroll.delta
 
       // RAYCAST opacity in grid view
       if (activeIndex === itemKey && phase === "grid") {

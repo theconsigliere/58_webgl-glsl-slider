@@ -25,6 +25,8 @@ export default function GalleryScene() {
     phase,
   } = useStore((state) => state)
 
+  console.log("why re-render?")
+
   //grid view
   useEffect(() => {
     // animte to grid view
@@ -90,7 +92,7 @@ export default function GalleryScene() {
           )
 
           // set active index
-          setActiveIndex(index)
+          if (activeIndex !== index) setActiveIndex(index)
         }
 
         // SNAP SCROLL
