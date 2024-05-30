@@ -32,12 +32,11 @@ export default function GalleryScene() {
       //map through imagesRef
       imagesRef.current.forEach((image, index) => {
         // reposition
-        damp3(image.position, gridPositions[index], 0.05, 1)
+        //  damp3(image.position, gridPositions[index], 0.05, 1)
         // re-scale
         damp3(image.scale, gridSlideWidth, 0.25, 1)
         // set opacity to 0.85
-
-        damp(image.material.uniforms.distanceFromCenter, "value", 0.9, 0.45, 1)
+        damp(image.material.uniforms.distanceFromCenter, "value", 0.45, 0.45, 1)
       })
     }
 
@@ -55,21 +54,18 @@ export default function GalleryScene() {
   // re-render if galleryPositions change
 
   useFrame((state, delta) => {
+    // animate to grid view
+    if (phase === "grid") {
+      //map through imagesRef
+      imagesRef.current.forEach((image, index) => {
+        // reposition
+        damp3(image.position, gridPositions[index], 0.125, delta)
+      })
+    }
+
     if (phase === "gallery") {
       // loop through images and update their position
       imagesRef.current.forEach((image, index) => {
-        damp(
-          image.position,
-          "x",
-          galleryPositions[index][0] -
-            // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
-            scroll.offset *
-              (imagesLength - 1) * // when offset is in middle * (images.length - 1)
-              (gallerySlideWidth + gallerySlideMargin),
-          0.1,
-          delta
-        )
-
         // if image position is 1 or less or -1 or more than update greyscale value to 1
         if (Math.abs(image.position.x) > 1) {
           // lerp uniform to 0 to make it black and white
@@ -110,6 +106,19 @@ export default function GalleryScene() {
             expo.out,
             0.01
           )
+        } else {
+          // if not snapping run as usual
+          damp(
+            image.position,
+            "x",
+            galleryPositions[index][0] -
+              // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
+              scroll.offset *
+                (imagesLength - 1) * // when offset is in middle * (images.length - 1)
+                (gallerySlideWidth + gallerySlideMargin),
+            0.1,
+            delta
+          )
         }
       })
     }
@@ -122,7 +131,6 @@ export default function GalleryScene() {
         0.25,
         delta
       )
-      state.camera.lookAt(0, 0, 0)
     } else {
       damp3(state.camera.position, [0, 0, 4], 0.25, delta)
     }
@@ -134,6 +142,7 @@ export default function GalleryScene() {
       {images.map((image, index) => (
         <Plane
           key={index}
+          itemKey={index}
           ref={(el) => (imagesRef.current[index] = el)}
           texture={useTexture(image.src)}
           position={galleryPositions[index]}

@@ -15,7 +15,7 @@ export default function SelectorScene() {
     galleryMargin: { value: 1.5, min: 0.0, max: 10 },
     galleryWidth: { value: 4, min: 1.5, max: 10 },
     gridMargin: { value: 1, min: 0.0, max: 10 },
-    gridColumns: { value: 3, min: 2, max: 5 },
+    gridColumns: { value: 3, min: 2, max: 5, step: 1 },
   })
 
   //deffer value
@@ -34,17 +34,15 @@ export default function SelectorScene() {
     gridSlideWidth,
   } = useStore((state) => state)
 
-  // Gallery
+  // FIRST USEEFFECT
+  // 1. useeffect so we set the grid stuff after render so its ready
   useEffect(() => {
-    if (phase === "gallery") {
-      setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
-      setGallerySlideMargin(levaProps.galleryMargin)
-      setGalleryPositions()
-    }
-  }, [viewport.width, levaProps, phase])
+    // GALLERY
+    setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
+    setGallerySlideMargin(levaProps.galleryMargin)
+    setGalleryPositions()
 
-  //grid
-  useEffect(() => {
+    //GRID
     setGridSlideWidth(
       viewport.height /
         (levaProps.gridColumns + levaProps.gridMargin + levaProps.gridMargin)
@@ -53,7 +51,27 @@ export default function SelectorScene() {
     setGridSlideMargin(levaProps.gridMargin)
     setGridColumns(levaProps.gridColumns)
     setGridPositions()
-  }, [phase, levaProps])
+  }, [])
+
+  // 2. everytime levachanges changes we need to reposition the grid / gallery
+
+  useEffect(() => {
+    // Gallery
+    setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
+    setGallerySlideMargin(levaProps.galleryMargin)
+    setGalleryPositions()
+    console.log("gallery")
+
+    // grid
+    setGridSlideWidth(
+      viewport.height /
+        (levaProps.gridColumns + levaProps.gridMargin + levaProps.gridMargin)
+    )
+
+    setGridSlideMargin(levaProps.gridMargin)
+    setGridColumns(levaProps.gridColumns)
+    setGridPositions()
+  }, [viewport, levaProps])
   //}, [viewport.width, levaProps, phase])
 
   return (
