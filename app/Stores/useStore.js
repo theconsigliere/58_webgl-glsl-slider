@@ -6,7 +6,7 @@ export default create(
     const images = [
       {
         src: "/images/1.jpg",
-        title: "Dirty Martiniz",
+        title: "Espresso",
       },
       {
         src: "/images/2.jpg",
@@ -115,6 +115,11 @@ export default create(
 
       //Selector
       phase: "gallery",
+      previousPhase: "gallery",
+      setPreviousPhase: (newPhase) => {
+        set((state) => ({ previousPhase: newPhase }))
+      },
+
       setGrid: () => {
         set((state) => {
           if (state.phase === "gallery") return { phase: "grid" }

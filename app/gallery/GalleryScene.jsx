@@ -10,6 +10,7 @@ function GalleryScene() {
   const scroll = useScroll()
   const objectRef = useRef()
   const imagesRef = useRef([])
+  let scrolltarget = 0
 
   const {
     activeIndex,
@@ -23,12 +24,15 @@ function GalleryScene() {
     gridSlideMargin,
     gridPositions,
     phase,
+    previousPhase,
+    setPreviousPhase,
   } = useStore((state) => state)
 
-  console.log("why re-render?", scroll)
+  // console.log("why re-render?", scroll)
 
   //grid view
   useEffect(() => {
+    setPreviousPhase(phase)
     // animte to grid view
     if (phase === "grid") {
       //map through imagesRef
@@ -68,48 +72,26 @@ function GalleryScene() {
     }
 
     if (phase === "gallery") {
+      // SCROLL FROM GRID TO GALLERY BUT DONT RUN IF WE ARE IN GALLERY VIEW
+
       // loop through images and update their position
       imagesRef.current.forEach((image, index) => {
-        // if image position is 1 or less or -1 or more than update greyscale value to 1
-        if (Math.abs(image.position.x) > 1) {
-          // lerp uniform to 0 to make it black and white
-          damp(
-            image.material.uniforms.distanceFromCenter,
-            "value",
-            0,
-            0.45,
-            delta
-          )
-          // lerp --data-opacity to 0 to make it invisible
-        } else {
-          //* ACTIVE IMAGE
-          damp(
-            image.material.uniforms.distanceFromCenter,
-            "value",
-            1,
-            0.45,
-            delta
-          )
-          // set active index
-          if (activeIndex !== index) setActiveIndex(index)
-        }
-
         // SNAP SCROLL
         // we have begun scrolling
         if (scroll.delta === 0 && scroll.offset > 0) {
+          //  console.log("snapping?", index)
           damp(
             image.position,
             "x",
             (gallerySlideMargin + gallerySlideWidth) * (index - activeIndex),
-            0.35,
+            0.25,
             delta,
             1,
             expo.out,
             0.01
           )
         } else {
-          // if not snapping run as usual
-
+          // scroll is moving
           damp(
             image.position,
             "x",
@@ -121,6 +103,39 @@ function GalleryScene() {
             0.1,
             delta
           )
+        }
+
+        // ACTIVE OR NOT
+        // if image position is 1 or less or -1 or more than update greyscale value to 1
+        if (Math.abs(image.position.x) > 1.25) {
+          // lerp uniform to 0 to make it black and white
+          damp(
+            image.material.uniforms.distanceFromCenter,
+            "value",
+            0,
+            0.45,
+            delta
+          )
+        } else {
+          //* ACTIVE IMAGE
+          damp(
+            image.material.uniforms.distanceFromCenter,
+            "value",
+            1,
+            0.45,
+            delta
+          )
+          // set active index
+          if (activeIndex !== index) {
+            // console.log(
+            //   "getting lost here?",
+            //   "index:",
+            //   index,
+            //   "activeIndex",
+            //   activeIndex
+            // )
+            setActiveIndex(index)
+          }
         }
       })
     }
@@ -136,6 +151,25 @@ function GalleryScene() {
       damp3(state.camera.position, [0, 0, 4], 0.25, delta)
     }
     state.camera.lookAt(0, 0, 0)
+
+    // INFINITE SCROLL
+    // camera z index is 4
+
+    // if image position is out of view (-4, 4)
+    // get last image position X  || galleryPositions[imagesLength - 1][0]
+    // get first image position X || galleryPositions[0][0]
+    // activeIndez
+
+    // get scroll direction
+    if (scroll.offset > scrolltarget) {
+      // forwards 1
+      console.log("forwards")
+    } else {
+      // backwards -1
+      console.log("backwards")
+    }
+
+    scrolltarget = scroll.offset
   })
 
   return (
