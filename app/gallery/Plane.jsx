@@ -10,6 +10,7 @@ function Plane({ texture, itemKey, ...props }, ref) {
   const { viewport, size } = useThree()
   const scroll = useScroll()
   const shaderRef = useRef()
+  let scrolltarget = 0
 
   const { gallerySlideWidth, setActiveIndex, activeIndex, phase } = useStore(
     (state) => state
@@ -18,7 +19,20 @@ function Plane({ texture, itemKey, ...props }, ref) {
   useFrame((state, delta) => {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uTime.value = state.clock.elapsedTime
-      shaderRef.current.uniforms.uVelocity.value = scroll.delta
+
+      // squeeze the plane using the velocity & hide on grid
+      if (phase === "gallery") {
+        shaderRef.current.uniforms.uVelocity.value = scroll.delta
+
+        // get scroll direction
+        if (scroll.offset > scrolltarget)
+          // forwards
+          shaderRef.current.uniforms.uVelocityDirection.value = 1
+        else {
+          // backwards
+          shaderRef.current.uniforms.uVelocityDirection.value = -1
+        }
+      }
 
       // RAYCAST opacity in grid view
       if (activeIndex === itemKey && phase === "grid") {
@@ -39,6 +53,8 @@ function Plane({ texture, itemKey, ...props }, ref) {
         )
       }
     }
+
+    scrolltarget = scroll.offset
   })
 
   return (

@@ -12,6 +12,7 @@ const NewShaderMaterial = shaderMaterial(
     distanceFromCenter: 0,
     transparent: true,
     uVelocity: 0,
+    uVelocityDirection: 1,
     // wireframe: true,
     // side: THREE.DoubleSide,
   },
@@ -21,7 +22,9 @@ const NewShaderMaterial = shaderMaterial(
       uniform float uTime;  
       uniform float distanceFromCenter;
       uniform float uVelocity;
+      uniform float uVelocityDirection;
       varying vec2 vUv;
+
 
       #define M_PI 3.1415926535897932384626433832795
 
@@ -36,7 +39,7 @@ const NewShaderMaterial = shaderMaterial(
         pos.xy *= 1.+ (distanceFromCenter * 0.125);
 
         // squeeze the plane using the velocity
-        pos.x += (sin(uv.y * M_PI) * uVelocity * 10.);
+        pos.x += (sin(uv.y * M_PI) * (uVelocity * 10.)) * uVelocityDirection;
 
         vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
         // Final position
@@ -57,8 +60,11 @@ const NewShaderMaterial = shaderMaterial(
       uniform vec2 uPointer;
       uniform sampler2D uTexture;
       uniform float uVelocity;
+     // uniform float uVelocityDirection;
 
       varying vec2 vUv;  
+
+      #define M_PI 3.1415926535897932384626433832795
 
              
       void main()
@@ -74,6 +80,8 @@ const NewShaderMaterial = shaderMaterial(
         // color run effect on scroll
         // texture.r += uVelocity * 10.;
         // texture.g += uVelocity * 15.;
+
+  
 
         gl_FragColor = texture;
         #include <tonemapping_fragment>

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, memo } from "react"
 import { useFrame } from "@react-three/fiber"
 import { useScroll, useTexture } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
@@ -6,7 +6,7 @@ import Plane from "./Plane"
 
 import useStore from "../Stores/useStore"
 
-export default function GalleryScene() {
+function GalleryScene() {
   const scroll = useScroll()
   const objectRef = useRef()
   const imagesRef = useRef([])
@@ -25,7 +25,7 @@ export default function GalleryScene() {
     phase,
   } = useStore((state) => state)
 
-  console.log("why re-render?")
+  console.log("why re-render?", scroll)
 
   //grid view
   useEffect(() => {
@@ -40,6 +40,8 @@ export default function GalleryScene() {
         // set opacity to 0.85
         damp(image.material.uniforms.distanceFromCenter, "value", 0.45, 0.45, 1)
       })
+
+      // prevent scrolling
     }
 
     // animate to gallery view
@@ -78,11 +80,9 @@ export default function GalleryScene() {
             0.45,
             delta
           )
-
           // lerp --data-opacity to 0 to make it invisible
         } else {
           //* ACTIVE IMAGE
-
           damp(
             image.material.uniforms.distanceFromCenter,
             "value",
@@ -90,7 +90,6 @@ export default function GalleryScene() {
             0.45,
             delta
           )
-
           // set active index
           if (activeIndex !== index) setActiveIndex(index)
         }
@@ -110,6 +109,7 @@ export default function GalleryScene() {
           )
         } else {
           // if not snapping run as usual
+
           damp(
             image.position,
             "x",
@@ -125,7 +125,6 @@ export default function GalleryScene() {
       })
     }
     //* PARALLAX CAMERA
-
     if (phase === "gallery") {
       damp3(
         state.camera.position,
@@ -155,3 +154,6 @@ export default function GalleryScene() {
     </group>
   )
 }
+
+// use memo to prevent re-render
+export default memo(GalleryScene)
