@@ -2,9 +2,13 @@ import { useEffect, useRef, memo } from "react"
 import { useFrame } from "@react-three/fiber"
 import { useScroll, useTexture } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
-import Plane from "./Plane"
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react"
+
+gsap.registerPlugin(useGSAP)
 
 import useStore from "../Stores/useStore"
+import Plane from "./Plane"
 
 function GalleryScene() {
   const scroll = useScroll()
@@ -28,49 +32,69 @@ function GalleryScene() {
     setPreviousPhase,
   } = useStore((state) => state)
 
-  // console.log("why re-render?", scroll)
+  // GSAP ANIMATE BETWEEN VIEWS
 
-  //grid view
-  useEffect(() => {
+  const gridTimeline = gsap.timeline()
+  const galleryTimeline = gsap.timeline()
+
+  useGSAP(() => {
     setPreviousPhase(phase)
-    // animte to grid view
-    if (phase === "grid") {
-      //map through imagesRef
-      imagesRef.current.forEach((image, index) => {
-        // reposition
-        //  damp3(image.position, gridPositions[index], 0.05, 1)
-        // re-scale
-        damp3(image.scale, gridSlideWidth, 0.25, 1)
-        // set opacity to 0.85
-        damp(image.material.uniforms.distanceFromCenter, "value", 0.45, 0.45, 1)
-      })
+    // gsap code here...
 
-      // prevent scrolling
-    }
-
-    // animate to gallery view
-    if (phase === "gallery") {
-      imagesRef.current.forEach((image, index) => {
-        // from grid so that y is 0
-        damp(image.position, "y", 0, 0.1, 1)
-        // re-scale
-        damp3(image.scale, gallerySlideWidth, 0.25, 1)
-      })
-    }
+    // TO GRID
+    imagesRef.current.forEach((image, i) => {
+      if (phase === "grid") {
+        gsap.to(image.scale, {
+          x: gridSlideWidth,
+          y: gridSlideWidth,
+          duration: 0.5,
+          ease: "expo.out",
+        })
+        gsap.to(
+          image.position,
+          {
+            x: gridPositions[i][0],
+            y: gridPositions[i][1],
+            z: gridPositions[i][2],
+            duration: 0.5,
+            ease: "expo.out",
+          },
+          "<"
+        )
+        gsap.to(
+          image.material.uniforms.distanceFromCenter,
+          {
+            value: 0.45,
+            duration: 0.5,
+            ease: "expo.out",
+          },
+          "<"
+        )
+      }
+      // TO GALLERY FROM GRID
+      if (phase === "gallery" && previousPhase !== null) {
+        gsap.to(image.scale, {
+          x: gallerySlideWidth,
+          y: gallerySlideWidth,
+          duration: 1.5,
+          ease: "expo.out",
+        })
+        gsap.to(
+          image.position,
+          {
+            x: galleryPositions[i][0],
+            y: galleryPositions[i][1],
+            z: galleryPositions[i][2],
+            duration: 1.5,
+            ease: "expo.out",
+          },
+          "<"
+        )
+      }
+    })
   }, [phase])
 
-  // re-render if galleryPositions change
-
   useFrame((state, delta) => {
-    // animate to grid view
-    if (phase === "grid") {
-      //map through imagesRef
-      imagesRef.current.forEach((image, index) => {
-        // reposition
-        damp3(image.position, gridPositions[index], 0.125, delta)
-      })
-    }
-
     if (phase === "gallery") {
       // SCROLL FROM GRID TO GALLERY BUT DONT RUN IF WE ARE IN GALLERY VIEW
 

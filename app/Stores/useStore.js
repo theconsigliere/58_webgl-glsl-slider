@@ -115,7 +115,7 @@ export default create(
 
       //Selector
       phase: "gallery",
-      previousPhase: "gallery",
+      previousPhase: null,
       setPreviousPhase: (newPhase) => {
         set((state) => ({ previousPhase: newPhase }))
       },
