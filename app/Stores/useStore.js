@@ -119,6 +119,10 @@ export default create(
       setPreviousPhase: (newPhase) => {
         set((state) => ({ previousPhase: newPhase }))
       },
+      runUseFrame: true,
+      setRunUseFrame: (bool) => {
+        set((state) => ({ runUseFrame: bool }))
+      },
 
       setGrid: () => {
         set((state) => {
