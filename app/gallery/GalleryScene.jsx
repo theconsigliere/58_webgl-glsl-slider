@@ -30,6 +30,8 @@ function GalleryScene() {
     phase,
     previousPhase,
     setPreviousPhase,
+    runUseFrame,
+    setRunUseFrame,
   } = useStore((state) => state)
 
   // GSAP ANIMATE BETWEEN VIEWS
@@ -42,8 +44,9 @@ function GalleryScene() {
     // gsap code here...
 
     // TO GRID
-    imagesRef.current.forEach((image, i) => {
-      if (phase === "grid") {
+
+    if (phase === "grid") {
+      imagesRef.current.forEach((image, i) => {
         gsap.to(image.scale, {
           x: gridSlideWidth,
           y: gridSlideWidth,
@@ -70,11 +73,13 @@ function GalleryScene() {
           },
           "<"
         )
-      }
-      // TO GALLERY FROM GRID
-      if (phase === "gallery" && previousPhase !== null) {
-        console.log(activeIndex)
+      })
+    }
 
+    // TO GALLERY FROM GRID
+    if (phase === "gallery" && previousPhase !== null) {
+      setRunUseFrame(false)
+      imagesRef.current.forEach((image, i) => {
         gsap.to(image.scale, {
           x: gallerySlideWidth,
           y: gallerySlideWidth,
@@ -102,69 +107,75 @@ function GalleryScene() {
           },
           "<"
         )
-      }
-    })
+      })
+
+      //run one second after gsap animation
+
+      setTimeout(() => {
+        setRunUseFrame(true)
+      }, 1000)
+    }
   }, [phase])
 
   useFrame((state, delta) => {
-    if (phase === "gallery") {
+    if (phase === "gallery" && runUseFrame) {
       // SCROLL FROM GRID TO GALLERY BUT DONT RUN IF WE ARE IN GALLERY VIEW
       // loop through images and update their position
-      // TODO RE-ADD imagesRef.current.forEach((image, index) => {
-      //   // SNAP SCROLL
-      //   // we have begun scrolling
-      //   if (scroll.delta === 0 && scroll.offset > 0) {
-      //     //  console.log("snapping?", index)
-      //     damp(
-      //       image.position,
-      //       "x",
-      //       (gallerySlideMargin + gallerySlideWidth) * (index - activeIndex),
-      //       0.25,
-      //       delta,
-      //       1,
-      //       expo.out,
-      //       0.01
-      //     )
-      //   } else {
-      //     // scroll is moving
-      //     damp(
-      //       image.position,
-      //       "x",
-      //       galleryPositions[index][0] -
-      //         // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
-      //         scroll.offset *
-      //           (imagesLength - 1) * // when offset is in middle * (images.length - 1)
-      //           (gallerySlideWidth + gallerySlideMargin),
-      //       0.1,
-      //       delta
-      //     )
-      //   }
-      //   // ACTIVE OR NOT
-      //   // if image position is 1 or less or -1 or more than update greyscale value to 1
-      //   if (Math.abs(image.position.x) > 1.25) {
-      //     // lerp uniform to 0 to make it black and white
-      //     damp(
-      //       image.material.uniforms.distanceFromCenter,
-      //       "value",
-      //       0,
-      //       0.45,
-      //       delta
-      //     )
-      //   } else {
-      //     //* ACTIVE IMAGE
-      //     damp(
-      //       image.material.uniforms.distanceFromCenter,
-      //       "value",
-      //       1,
-      //       0.45,
-      //       delta
-      //     )
-      //     // set active index
-      //     if (activeIndex !== index) {
-      //       setActiveIndex(index)
-      //     }
-      //   }
-      // })
+      imagesRef.current.forEach((image, index) => {
+        // SNAP SCROLL
+        // we have begun scrolling
+        if (scroll.delta === 0 && scroll.offset > 0) {
+          //  console.log("snapping?", index)
+          damp(
+            image.position,
+            "x",
+            (gallerySlideMargin + gallerySlideWidth) * (index - activeIndex),
+            0.25,
+            delta,
+            1,
+            expo.out,
+            0.01
+          )
+        } else {
+          // scroll is moving
+          damp(
+            image.position,
+            "x",
+            galleryPositions[index][0] -
+              // (sliderWidth + sliderMargin) - // offset to make first slide be in middle
+              scroll.offset *
+                (imagesLength - 1) * // when offset is in middle * (images.length - 1)
+                (gallerySlideWidth + gallerySlideMargin),
+            0.1,
+            delta
+          )
+        }
+        // ACTIVE OR NOT
+        // if image position is 1 or less or -1 or more than update greyscale value to 1
+        if (Math.abs(image.position.x) > 1.25) {
+          // lerp uniform to 0 to make it black and white
+          damp(
+            image.material.uniforms.distanceFromCenter,
+            "value",
+            0,
+            0.45,
+            delta
+          )
+        } else {
+          //* ACTIVE IMAGE
+          damp(
+            image.material.uniforms.distanceFromCenter,
+            "value",
+            1,
+            0.45,
+            delta
+          )
+          // set active index
+          if (activeIndex !== index) {
+            setActiveIndex(index)
+          }
+        }
+      })
       // TODO RE-ADD
     }
     //* PARALLAX CAMERA
