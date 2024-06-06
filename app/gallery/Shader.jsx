@@ -37,7 +37,7 @@ const NewShaderMaterial = shaderMaterial(
         pos.xy *= 1.+ (distanceFromCenter * 0.125);
 
         // squeeze the plane using the velocity
-        pos.x += (sin(uv.y * M_PI) * (uVelocity * 10.)) * uVelocityDirection;
+        pos.x += (sin(uv.y * M_PI) * (uVelocity * 5.)) * uVelocityDirection;
 
         vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
         // Final position

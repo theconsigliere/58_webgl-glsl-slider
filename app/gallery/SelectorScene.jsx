@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useThree } from "@react-three/fiber"
-import { ScrollControls } from "@react-three/drei"
+import { ScrollControls, KeyboardControls } from "@react-three/drei"
 import { useControls } from "leva"
 
 import useStore from "../Stores/useStore"
@@ -60,7 +60,6 @@ export default function SelectorScene() {
     setGallerySlideWidth(viewport.width / levaProps.galleryWidth)
     setGallerySlideMargin(levaProps.galleryMargin)
     setGalleryPositions()
-    console.log("gallery")
 
     // grid
     setGridSlideWidth(
@@ -75,10 +74,15 @@ export default function SelectorScene() {
   //}, [viewport.width, levaProps, phase])
 
   return (
-    <>
+    <KeyboardControls
+      map={[
+        { keys: ["KeyG", "ArrowUp"], name: "chooseGallery" },
+        { keys: ["KeyV", "ArrowDown"], name: "chooseGrid" },
+      ]}
+    >
       <ScrollControls distance={imagesLength}>
         <GalleryScene />
       </ScrollControls>
-    </>
+    </KeyboardControls>
   )
 }

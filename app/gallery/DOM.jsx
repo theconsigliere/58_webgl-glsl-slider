@@ -43,13 +43,13 @@ export default function GalleryDOM() {
           className={`${styles.galleryButton} ${styles.selectButton}`}
           onClick={setGallery}
         >
-          Gallery
+          Gallery 'G'
         </button>
         <button
           className={`${styles.gridButton} ${styles.selectButton}`}
           onClick={setGrid}
         >
-          Grid
+          Grid 'V'
         </button>
       </div>
     </>

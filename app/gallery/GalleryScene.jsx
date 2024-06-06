@@ -1,6 +1,6 @@
 import { useEffect, useRef, memo } from "react"
 import { useFrame } from "@react-three/fiber"
-import { useScroll, useTexture } from "@react-three/drei"
+import { useScroll, useTexture, useKeyboardControls } from "@react-three/drei"
 import { damp, damp3, expo } from "maath/easing"
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react"
@@ -32,7 +32,22 @@ function GalleryScene() {
     setPreviousPhase,
     runUseFrame,
     setRunUseFrame,
+    setGrid,
+    setGallery,
   } = useStore((state) => state)
+
+  // Keyboard controls
+  const chooseGrid = useKeyboardControls((state) => state.chooseGrid)
+  const chooseGallery = useKeyboardControls((state) => state.chooseGallery)
+
+  useEffect(() => {
+    if (chooseGrid) {
+      setGrid()
+    }
+    if (chooseGallery) {
+      setGallery()
+    }
+  }, [chooseGrid, chooseGallery])
 
   // GSAP ANIMATE BETWEEN VIEWS
 
@@ -44,7 +59,6 @@ function GalleryScene() {
     // gsap code here...
 
     // TO GRID
-
     if (phase === "grid") {
       imagesRef.current.forEach((image, i) => {
         gsap.to(image.scale, {
@@ -79,6 +93,7 @@ function GalleryScene() {
     // TO GALLERY FROM GRID
     if (phase === "gallery" && previousPhase !== null) {
       setRunUseFrame(false)
+
       imagesRef.current.forEach((image, i) => {
         gsap.to(image.scale, {
           x: gallerySlideWidth,
